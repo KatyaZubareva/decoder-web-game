@@ -1,7 +1,7 @@
 import React from "react";
 
-export function MainScreen() {
+export function GameScreen() {
 
 }
 
-export default MainScreen;
+export default GameScreen;
