@@ -11,7 +11,8 @@ export function LobbyMenu() {
 
     return (
         <div className="flex flex-col items-center justify-between h-screen bg-gray-50 text-center gap-5 font-montserrat px-96 py-5">
-            <div className="flex flex-row items-center justify-between w-full">
+
+            <div className="flex flex-row items-center justify-between w-full sticky top-0 mb-4">
                 <div className="flex flex-row items-start">
                     <img src="/assets/avatar2.png" className="w-12"></img>
                     <p>user_123</p>
@@ -27,6 +28,13 @@ export function LobbyMenu() {
                 <GameCard>Игра 2</GameCard>
             </div>
 
+            <div className="sticky bottom z-10 w-full">
+                <Button className="flex flex-row items-center justify-center gap-2 bg-gray-900 hover:bg-gray-700 text-white text-base font-semibold rounded-lg shadow-lg w-full" onClick={() => setIsOpen(true)}>
+                <img src="/assets/add_icon.svg"></img>
+                Создать игру
+                </Button>
+            </div>
+
             <Modal open={isOpen} onClose={() => setIsOpen(false)}>
                 <h4 className="text-2xl font-semibold text-center">Создать игру</h4>
                 <div>
@@ -40,9 +48,6 @@ export function LobbyMenu() {
                 <Button className="bg-gray-900 hover:bg-gray-700 text-white text-base font-semibold rounded-lg shadow-lg w-full" onClick={() => {setIsOpen(false); navigate("./game");}}>Создать</Button>
             </Modal>
 
-        <Button className="flex flex-row items-center justify-center gap-2 bg-gray-900 hover:bg-gray-700 text-white text-base font-semibold rounded-lg shadow-lg mb-20 w-full" onClick={() => setIsOpen(true)}>
-            <img src="/assets/add_icon.svg"></img>
-            Создать игру</Button>
         </div>
     );
 } 
