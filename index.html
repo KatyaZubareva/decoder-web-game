@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Документация API</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            indigo: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+            amber: {
+              100: '#fef3c7',
+              500: '#f59e0b',
+              600: '#d97706',
+              800: '#92400e',
+            },
+            purple: {
+              100: '#f3e8ff',
+              500: '#a855f7',
+              600: '#9333ea',
+              800: '#7e22ce',
+            },
+            emerald: {
+              100: '#ecfdf5',
+              500: '#10b981',
+              800: '#047857',
+            },
+            red: {
+              100: '#fee2e2',
+              500: '#ef4444',
+              800: '#991b1b',
+            },
+            blue: {
+              100: '#dbeafe',
+              500: '#3b82f6',
+              800: '#1e40af',
+            },
+          }
+        }
+      }
+    };
+  </script>
+  <!-- React + ReactDOM + Babel -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // --- Lucide Icons as Inline SVGs ---
+    const BookOpen = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
+    );
+    const Database = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+      </svg>
+    );
+    const Code = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+      </svg>
+    );
+    const Search = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+    );
+    const ChevronRight = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    );
+    const Copy = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+      </svg>
+    );
+    const Key = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/>
+      </svg>
+    );
+    const ExternalLink = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/>
+      </svg>
+    );
+    const Edit2 = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+      </svg>
+    );
+    const Check = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    );
+    const X = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    );
+    const Terminal = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+      </svg>
+    );
+
+    const Documentation = () => {
+      const [activeTab, setActiveTab] = React.useState("endpoints");
+      const [editingFunc, setEditingFunc] = React.useState(null);
+      const [editedParams, setEditedParams] = React.useState({});
+      const [liveExampleUrl, setLiveExampleUrl] = React.useState("");
+
+      const initialSqlFunctions = [
+        {
+          id: 1,
+          name: "get_games",
+          description: "Получение списка доступных игр (только незаполненные)",
+          params: [],
+          paramValues: [],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=get_games",
+          response: `[
+  {
+    "game_id": 14,
+    "players_count": 0,
+    "teams": [
+      {
+        "team_id": 22,
+        "team_color": "blue",
+        "free_roles": ["leader", "player"]
+      },
+      {
+        "team_id": 23,
+        "team_color": "red",
+        "free_roles": ["leader", "player"]
+      }
+    ]
+  }
+]`
+        },
+        {
+          id: 2,
+          name: "login_user",
+          description: "Вход в существующий аккаунт",
+          params: ["login (string)", "password (string)"],
+          paramValues: ["bob456", "pass2"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=login_user&p=[%22bob456%22,%22pass2%22]",
+          response: `{
+  "status": "ok",
+  "login": "bob456",
+  "token": 1522468386
+}`
+        },
+        {
+          id: 3,
+          name: "register_user",
+          description: "Регистрация нового пользователя",
+          params: ["login (string)", "password (string)"],
+          paramValues: ["alice789", "password123"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=register_user&p=[%22alice789%22,%22password123%22]",
+          response: `{
+  "status": "ok",
+  "login": "alice789",
+  "token": 1623485967
+}`
+        },
+        {
+          id: 5,
+          name: "create_game",
+          description: "Создание новой игровой сессии",
+          params: ["token (bigint)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
+          paramValues: ["1611941623", "gamepass", "blue", "leader", "Alice"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=create_game&p=[1611941623,%22gamepass%22,%22blue%22,%22leader%22,%22Alice%22]",
+          response: `{
+  "status": "ok",
+  "game_id": 24,
+  "team_id": 32,
+  "role": "leader",
+  "player_name": "Alice",
+  "round_number": 1
+}`
+        },
+        {
+          id: 6,
+          name: "join_game",
+          description: "Присоединение к существующей игре. При заполнении обеих команд автоматически генерируются карточки и начинается 1 раунд.",
+          params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
+          paramValues: ["1611941623", "25", "gamepass", "blue", "player", "Bob"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=join_game&p=[1611941623,25,%22gamepass%22,%22blue%22,%22player%22,%22Bob%22]",
+          response: `{
+  "status": "ok",
+  "game_id": 25,
+  "team_id": 33,
+  "role": "player",
+  "player_name": "Bob",
+  "round_number": 1
+}`
+        },
+        {
+          id: 7,
+          name: "get_game_state",
+          description: "Получение полного состояния игры. Капитан видит реальные слова противника, игроки видят '???'.",
+          params: ["token (bigint)", "gameID (int)", "gamePassword (string)"],
+          paramValues: ["1611941623", "25", "gamepass"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=get_game_state&p=[1611941623,25,%22gamepass%22]",
+          response: `{
+  "status": "ok",
+  "game_id": 25,
+  "time_left": "00:29:45",
+  "game_over": false,
+  "cards_valid": true,
+  "blue_cards_count": 4,
+  "red_cards_count": 4,
+  "player_info": {
+    "login": "bob456",
+    "role": "leader",
+    "team_id": 33,
+    "current_turn": "leader",
+    "can_submit_hint": true,
+    "can_submit_guess": false
+  },
+  "teams": [
+    {
+      "team_id": 33,
+      "color": "blue",
+      "black_tokens": 0,
+      "white_tokens": 0,
+      "result": "playing",
+      "leader": {
+        "login": "alice789",
+        "name": "Alice",
+        "role": "leader"
+      },
+      "players": [
+        {
+          "login": "alice789",
+          "name": "Alice",
+          "role": "leader"
+        },
+        {
+          "login": "bob456",
+          "name": "Bob",
+          "role": "player"
+        }
+      ],
+      "player_count": 2,
+      "cards_valid": true,
+      "cards": [
+        {"position": 1, "word": "жизнь"},
+        {"position": 2, "word": "работа"},
+        {"position": 3, "word": "глаз"},
+        {"position": 4, "word": "человек"}
+      ],
+      "words": ["жизнь", "работа", "глаз", "человек"],
+      "current_round": {
+        "round_number": 1,
+        "correct_code": "321",
+        "guessed_code": null,
+        "intercept_code": null,
+        "hint": null
+      },
+      "previous_rounds": []
+    },
+    {
+      "team_id": 34,
+      "color": "red",
+      "black_tokens": 0,
+      "white_tokens": 0,
+      "result": "playing",
+      "leader": {
+        "login": "charlie",
+        "name": "Charlie",
+        "role": "leader"
+      },
+      "players": [
+        {
+          "login": "charlie",
+          "name": "Charlie",
+          "role": "leader"
+        },
+        {
+          "login": "david",
+          "name": "David",
+          "role": "player"
+        }
+      ],
+      "player_count": 2,
+      "cards_valid": true,
+      "cards": [
+        {"position": 1, "word": "???"},
+        {"position": 2, "word": "???"},
+        {"position": 3, "word": "???"},
+        {"position": 4, "word": "???"}
+      ],
+      "words": ["дом", "лес", "вода", "огонь"],
+      "current_round": {
+        "round_number": 1,
+        "correct_code": null,
+        "guessed_code": null,
+        "intercept_code": null,
+        "hint": null
+      },
+      "previous_rounds": []
+    }
+  ],
+  "game_state": {
+    "phase": "waiting",
+    "players_count": 4,
+    "all_players_ready": true
+  }
+}`
+        },
+        {
+          id: 8,
+          name: "submit_hint",
+          description: "Отправка подсказки капитаном (3 слова). После отправки дается 30 секунд на догадку.",
+          params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "hint (string)"],
+          paramValues: ["1611941623", "25", "gamepass", "кот суп лук"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=submit_hint&p=[1611941623,25,%22gamepass%22,%22кот%20суп%20лук%22]",
+          response: `{
+  "status": "ok",
+  "hint": "кот суп лук",
+  "round_number": 1,
+  "team_id": 33,
+  "phase_end_time": "2026-02-11T15:30:45.123456",
+  "message": "Hint submitted successfully. Players have 30 seconds to guess."
+}`
+        },
+        {
+          id: 9,
+          name: "submit_guess",
+          description: "Отправка догадки игроком (3 цифры 1-4). При совпадении с кодом противника - перехват (черный жетон), при несовпадении - срыв (белый жетон). Автоматически создает следующий раунд.",
+          params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "guess (CHAR(3))"],
+          paramValues: ["1611941623", "25", "gamepass", "123"],
+          exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=submit_guess&p=[1611941623,25,%22gamepass%22,%22123%22]",
+          response: `{
+  "status": "ok",
+  "result": "intercept",
+  "tokens_gained": {
+    "intercept": 1,
+    "disruption": 0
+  },
+  "current_round": 1,
+  "next_round": 2
+}`
+        }
+        
+      ];
+
+      const databaseTables = [
+        {
+          name: "users",
+          description: "Таблица пользователей системы",
+          columns: [
+            { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "PK", description: "Логин пользователя" },
+            { name: "password_hash", type: "VARCHAR(255)", nullable: "NOT NULL", key: "", description: "Хэш пароля" },
+            { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Дата создания" },
+          ]
+        },
+        {
+          name: "tokens",
+          description: "Таблица токенов авторизации",
+          columns: [
+            { name: "token", type: "BIGINT", nullable: "NOT NULL", key: "PK", description: "Токен сессии" },
+            { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "FK → users.login", description: "Логин пользователя" },
+            { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Время создания" },
+          ]
+        },
+        {
+          name: "games",
+          description: "Таблица игровых сессий",
+          columns: [
+            { name: "game_id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID игры" },
+            { name: "password", type: "VARCHAR(50)", nullable: "NULL", key: "", description: "Пароль для входа в игру" },
+            { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Время создания" },
+            { name: "phase_end_time", type: "TIMESTAMP", nullable: "NULL", key: "", description: "Время окончания фазы" },
+          ]
+        },
+        {
+          name: "teams",
+          description: "Таблица команд в играх",
+          columns: [
+            { name: "team_id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID команды" },
+            { name: "game_id", type: "INT", nullable: "NOT NULL", key: "FK → games.game_id", description: "ID игры" },
+            { name: "color", type: "color", nullable: "NOT NULL", key: "ENUM('red','blue')", description: "Цвет команды" },
+            { name: "white_tokens", type: "INT", nullable: "NOT NULL", key: "", description: "Белые токены (срыв)" },
+            { name: "black_tokens", type: "INT", nullable: "NOT NULL", key: "", description: "Черные токены (перехват)" },
+          ]
+        },
+        {
+          name: "players",
+          description: "Таблица игроков в играх",
+          columns: [
+            { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "FK → users.login", description: "Логин игрока" },
+            { name: "team_id", type: "INT", nullable: "NOT NULL", key: "FK → teams.team_id", description: "ID команды" },
+            { name: "role", type: "player_role", nullable: "NOT NULL", key: "ENUM('player','leader')", description: "Роль в команде" },
+            { name: "name", type: "VARCHAR(50)", nullable: "NOT NULL", key: "", description: "Имя игрока в игре" },
+          ]
+        },
+        {
+          name: "nouns",
+          description: "Таблица существительных для карточек",
+          columns: [
+            { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID слова" },
+            { name: "word", type: "VARCHAR(100)", nullable: "NOT NULL", key: "", description: "Слово" },
+          ]
+        },
+        {
+          name: "cards",
+          description: "Таблица карточек в игре",
+          columns: [
+            { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID карточки" },
+            { name: "team_id", type: "INT", nullable: "NOT NULL", key: "FK → teams.team_id", description: "ID команды" },
+            { name: "word", type: "VARCHAR(100)", nullable: "NOT NULL", key: "", description: "Слово на карточке" },
+            { name: "position", type: "INT", nullable: "NOT NULL", key: "", description: "Позиция на поле (1-4)" },
+          ]
+        },
+        {
+          name: "rounds",
+          description: "Таблица раундов игры",
+          columns: [
+            { name: "team_id", type: "INT", nullable: "NOT NULL", key: "FK → teams.team_id", description: "ID команды" },
+            { name: "round_number", type: "INT", nullable: "NOT NULL", key: "", description: "Номер раунда" },
+            { name: "correct_code", type: "CHAR(3)", nullable: "NULL", key: "", description: "Правильный код" },
+            { name: "hint", type: "VARCHAR(100)", nullable: "NULL", key: "", description: "Подсказка" },
+            { name: "guessed_code", type: "CHAR(3)", nullable: "NULL", key: "", description: "Догадка игрока" },
+            { name: "intercept_code", type: "CHAR(3)", nullable: "NULL", key: "", description: "Перехваченный код" },
+          ]
+        }
+      ];
+
+      const [sqlFunctions, setSqlFunctions] = React.useState(initialSqlFunctions);
+
+      const TableColumn = ({ column }) => (
+        <tr className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+          <td className="py-2 px-3">
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono text-sm font-semibold text-slate-900">{column.name}</span>
+              {column.key.includes("PK") && (
+                <span className="inline-flex items-center px-1 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800">
+                  <Key className="w-2.5 h-2.5 mr-0.5" /> PK
+                </span>
+              )}
+              {column.key.includes("FK") && (
+                <span className="inline-flex items-center px-1 py-0.5 rounded text-[9px] font-bold bg-purple-100 text-purple-800">
+                  <Key className="w-2.5 h-2.5 mr-0.5" /> FK
+                </span>
+              )}
+              {column.key === "UNIQUE" && (
+                <span className="inline-flex items-center px-1 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800">
+                  UNIQUE
+                </span>
+              )}
+            </div>
+            <div className="text-xs text-slate-500 mt-1">{column.description}</div>
+          </td>
+          <td className="py-2 px-3">
+            <code className="font-mono text-xs text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">
+              {column.type}
+            </code>
+          </td>
+          <td className="py-2 px-3">
+            <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+              column.nullable === "NOT NULL" 
+                ? "bg-red-100 text-red-800" 
+                : "bg-emerald-100 text-emerald-800"
+            }`}>
+              {column.nullable}
+            </span>
+          </td>
+          <td className="py-2 px-3">
+            {column.key && !column.key.includes("PK") && !column.key.includes("FK") && column.key !== "UNIQUE" ? (
+              <span className="text-xs text-slate-500 italic">{column.key}</span>
+            ) : column.key && column.key.includes("FK") ? (
+              <span className="text-xs text-purple-600 font-medium">{column.key}</span>
+            ) : null}
+          </td>
+        </tr>
+      );
+
+      const handleStartEdit = (funcId) => {
+        setEditingFunc(funcId);
+        const func = sqlFunctions.find(f => f.id === funcId);
+        const initialParams = {};
+        func.params.forEach((param, index) => {
+          initialParams[index] = func.paramValues[index] || "";
+        });
+        setEditedParams(initialParams);
+        generateLiveUrl(func, initialParams);
+      };
+
+      const handleCancelEdit = () => {
+        setEditingFunc(null);
+        setEditedParams({});
+      };
+
+      const handleSaveEdit = (funcId) => {
+        const func = sqlFunctions.find(f => f.id === funcId);
+        const updatedParamValues = func.params.map((_, index) => editedParams[index] || "");
+        
+        const encodedParams = encodeURIComponent(JSON.stringify(updatedParamValues));
+        const newUrl = `https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=${func.name}&p=${encodedParams}`;
+        
+        const updatedFunctions = sqlFunctions.map(f => 
+          f.id === funcId 
+            ? { 
+                ...f, 
+                paramValues: updatedParamValues,
+                exampleUrl: newUrl 
+              }
+            : f
+        );
+        
+        setSqlFunctions(updatedFunctions);
+        setEditingFunc(null);
+        setEditedParams({});
+      };
+
+      const handleParamChange = (funcId, paramIndex, value) => {
+        const newParams = {
+          ...editedParams,
+          [paramIndex]: value
+        };
+        
+        setEditedParams(newParams);
+        
+        const func = sqlFunctions.find(f => f.id === funcId);
+        generateLiveUrl(func, newParams);
+      };
+
+      const generateLiveUrl = (func, params) => {
+        const paramArray = func.params.map((_, index) => params[index] || "");
+        const encodedParams = encodeURIComponent(JSON.stringify(paramArray));
+        const url = `https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=${func.name}&p=${encodedParams}`;
+        setLiveExampleUrl(url);
+      };
+
+      const getExampleUrl = (func) => {
+        if (editingFunc === func.id && liveExampleUrl) {
+          return liveExampleUrl;
+        }
+        return func.exampleUrl;
+      };
+
+      const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+      };
+
+      return (
+        <div className="min-h-screen bg-[#f8fafc] text-slate-700 font-sans flex">
+          <aside className="w-72 bg-white border-r border-slate-200 p-6 flex flex-col sticky top-0 h-screen">
+            <div className="flex items-center gap-2 mb-10 px-2">
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <Code />
+              </div>
+              <span className="font-bold text-xl text-slate-900 tracking-tight">DevDocs</span>
+            </div>
+
+            <nav className="space-y-1 flex-1">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-2">Ресурсы</p>
+              {[
+                { id: 'functions', label: 'SQL Функции', icon: Code },
+                { id: 'database', label: 'База данных', icon: Database },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    activeTab === item.id 
+                    ? 'bg-indigo-50 text-indigo-700 shadow-sm' 
+                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </aside>
+
+          <main className="flex-1 p-8 max-w-7xl mx-auto">
+            <div className="flex justify-between items-start mb-8">
+              <div>
+                <h1 className="text-2xl font-extrabold text-slate-900 mb-1">Документация API</h1>
+                <p className="text-slate-500 text-sm">Версия 2.2.0 • Последнее обновление: 11.02.2026</p>
+              </div>
+              <div className="relative group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                <input 
+                  type="text" 
+                  placeholder="Поиск метода..." 
+                  className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all w-96"
+                />
+              </div>
+            </div>
+
+            {activeTab === "database" ? (
+              <div className="space-y-6">
+                <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-amber-50 rounded-lg">
+                      <Database className="text-amber-600 w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-slate-900">Схема Базы Данных</h2>
+                      <p className="text-slate-500 text-sm mt-0.5">Полная структура таблиц и связей</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {databaseTables.map((table, index) => (
+                      <div key={index} className="border border-slate-200 rounded-lg overflow-hidden hover:border-indigo-300 transition-colors">
+                        <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                                <span className="font-mono text-sm">{table.name}</span>
+                                <span className="text-xs font-normal bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">
+                                  Таблица
+                                </span>
+                              </h3>
+                              <p className="text-slate-600 text-xs mt-0.5">{table.description}</p>
+                            </div>
+                            <div className="text-xs text-slate-500">
+                              {table.columns.length} колонок
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead className="bg-slate-100/50">
+                              <tr className="text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <th className="py-2 px-3">Колонка</th>
+                                <th className="py-2 px-3">Тип</th>
+                                <th className="py-2 px-3">Nullable</th>
+                                <th className="py-2 px-3">Ключи</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {table.columns.map((column, colIndex) => (
+                                <TableColumn key={colIndex} column={column} />
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-200">
+                    <h4 className="text-sm font-bold text-slate-700 mb-3">Легенда</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800">
+                          <Key className="w-2.5 h-2.5 mr-0.5" /> PK
+                        </span>
+                        <span className="text-xs text-slate-600">Первичный ключ</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-800">
+                          <Key className="w-2.5 h-2.5 mr-0.5" /> FK
+                        </span>
+                        <span className="text-xs text-slate-600">Внешний ключ</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">
+                          UNIQUE
+                        </span>
+                        <span className="text-xs text-slate-600">Уникальное</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800">
+                          NOT NULL
+                        </span>
+                        <span className="text-xs text-slate-600">Обязательное</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">
+                          NULL
+                        </span>
+                        <span className="text-xs text-slate-600">Необязательное</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {sqlFunctions.map((func) => (
+                  <div key={func.id} className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow transition-shadow overflow-hidden">
+                    <div className="p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="px-2.5 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg">
+                            <Code className="w-4 h-4 text-indigo-600" />
+                          </div>
+                          <div>
+                            <code className="text-base font-bold text-slate-900">{func.name}()</code>
+                            <p className="text-slate-600 text-sm mt-0.5">{func.description}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {editingFunc === func.id ? (
+                            <>
+                              <button
+                                onClick={() => handleSaveEdit(func.id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-medium rounded-md transition-colors"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                                Сохранить
+                              </button>
+                              <button
+                                onClick={handleCancelEdit}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-md transition-colors"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                                Отмена
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleStartEdit(func.id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-medium rounded-md transition-colors"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                                Изменить параметры
+                              </button>
+                              <a 
+                                href={getExampleUrl(func)} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-medium rounded-md transition-colors"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                Выполнить
+                              </a>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
+                        <div className="space-y-3">
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            Параметры функции
+                          </h4>
+                          <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 space-y-3">
+                            {func.params.length > 0 ? (
+                              func.params.map((param, index) => (
+                                <div key={index} className="space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-medium text-slate-700">{param}</span>
+                                    <span className="text-[10px] text-slate-400 bg-slate-200 px-1.5 py-0.5 rounded">
+                                      #{index + 1}
+                                    </span>
+                                  </div>
+                                  {editingFunc === func.id ? (
+                                    <input
+                                      type="text"
+                                      value={editedParams[index] || ""}
+                                      onChange={(e) => handleParamChange(func.id, index, e.target.value)}
+                                      className="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                                      placeholder={`Введите значение для ${param.split(' ')[0]}`}
+                                    />
+                                  ) : (
+                                    <div className="flex items-center justify-between bg-white px-3 py-1.5 rounded border border-slate-200">
+                                      <code className="text-sm text-indigo-600 font-mono">
+                                        {func.paramValues[index]}
+                                      </code>
+                                      <span className="text-xs text-slate-400 italic">изменяемый</span>
+                                    </div>
+                                  )}
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-center py-4 text-slate-500 text-sm">
+                                Функция не принимает параметров
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            JSON Ответ
+                          </h4>
+                          <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-800">
+                            <pre className="text-xs text-emerald-400 font-mono leading-relaxed whitespace-pre-wrap">
+                              {func.response}
+                            </pre>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            {editingFunc === func.id ? "Живая ссылка" : "Ссылка с параметрами"}
+                          </h4>
+                          <button
+                            onClick={() => copyToClipboard(getExampleUrl(func))}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-md transition-colors"
+                          >
+                            <Copy className="w-3 h-3" />
+                            Копировать
+                          </button>
+                        </div>
+                        <div className="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                          <code className="text-xs text-blue-300 font-mono break-all">
+                            {getExampleUrl(func)}
+                          </code>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Documentation />);
+  </script>
+</body>
+</html>
