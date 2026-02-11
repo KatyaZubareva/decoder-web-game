@@ -11,17 +11,31 @@ const Documentation = () => {
     {
       id: 1,
       name: "get_games",
-      description: "Вывод списка всех игр",
-      params: ["login (string)", "password (string)"],
-      paramValues: ["bob456", "pass2"],
+      description: "Получение списка доступных игр (только незаполненные)",
+      params: [],
+      paramValues: [],
       exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=get_games",
-      response: `{
-  "game_id": 31,
-  "players_count": 2
-}`
+      response: `[
+  {
+    "game_id": 14,
+    "players_count": 0,
+    "teams": [
+      {
+        "team_id": 22,
+        "team_color": "blue",
+        "free_roles": ["leader", "player"]
+      },
+      {
+        "team_id": 23,
+        "team_color": "red",
+        "free_roles": ["leader", "player"]
+      }
+    ]
+  }
+]`
     },
     {
-      id: 1,
+      id: 2,
       name: "login_user",
       description: "Вход в существующий аккаунт",
       params: ["login (string)", "password (string)"],
@@ -29,106 +43,224 @@ const Documentation = () => {
       exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=login_user&p=[%22bob456%22,%22pass2%22]",
       response: `{
   "status": "ok",
-  "login": "user_123",
+  "login": "bob456",
   "token": 1522468386
 }`
     },
     {
-      id: 2,
+      id: 3,
       name: "register_user",
       description: "Регистрация нового пользователя",
       params: ["login (string)", "password (string)"],
-      paramValues: ["bob456", "pass2"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=register_user&p=[%22bob456%22,%22pass2%22]",
+      paramValues: ["alice789", "password123"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=register_user&p=[%22alice789%22,%22password123%22]",
       response: `{
   "status": "ok",
-  "message": "Registration successful",
-  "login": "user_123"
-}`
-    },
-    {
-      id: 3,
-      name: "get_games",
-      description: "Вывод списка игр",
-      params: ["login (string)", "password (string)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
-      paramValues: ["alice123", "pass1", "gamepass", "blue", "leader", "Alice"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=create_game&p=[%22alice123%22,%22pass1%22,%22gamepass%22,%22blue%22,%22leader%22,%22Alice%22]",
-      response: `{
-  "game_id": 24,
-  "team_id": 32,
-  "role": "leader"
+  "login": "alice789",
+  "token": 1623485967
 }`
     },
     {
       id: 4,
-      name: "join_game",
-      description: "Вход в существующую игру",
-      params: ["login (string)", "password (string)", "gameID (int)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
-      paramValues: ["bob456", "pass2", "1", "gamepass", "blue", "player", "Alice"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=join_game&p=[%22bob456%22,%22pass2%22,25,%22gamepass%22,%22blue%22,%22player%22,%22Alice%22]",
+      name: "delete_user",
+      description: "Удаление пользователя и связанных данных",
+      params: ["token (bigint)"],
+      paramValues: ["1522468386"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=delete_user&p=[1522468386]",
       response: `{
-  "status": "success",
-  "player_id": 123,
-  "team": "red",
-  "role": "player"
+  "status": "ok",
+  "message": "User deleted successfully"
 }`
     },
     {
       id: 5,
       name: "create_game",
-      description: "Создание новой игры",
-      params: ["login (string)", "password (string)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
-      paramValues: ["alice123", "pass1", "gamepass", "blue", "leader", "Alice"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=create_game&p=[%22alice123%22,%22pass1%22,%22gamepass%22,%22blue%22,%22leader%22,%22Alice%22]",
+      description: "Создание новой игровой сессии",
+      params: ["token (bigint)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
+      paramValues: ["1611941623", "gamepass", "blue", "leader", "Alice"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=create_game&p=[1611941623,%22gamepass%22,%22blue%22,%22leader%22,%22Alice%22]",
       response: `{
+  "status": "ok",
   "game_id": 24,
   "team_id": 32,
-  "role": "leader"
+  "role": "leader",
+  "player_name": "Alice",
+  "round_number": 1
 }`
     },
     {
       id: 6,
-      name: "get_game_state",
-      description: "Получение текущего состояния игры",
-      params: ["login (string)", "password (string)", "gameID (int)", "gamePassword (string)"],
-      paramValues: ["alice123", "pass1", "1", "alpha123"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=get_game_state&p=[%22alice123%22,%22pass1%22,1,%22alpha123%22]",
+      name: "join_game",
+      description: "Присоединение к существующей игре. При заполнении обеих команд автоматически генерируются карточки и начинается 1 раунд.",
+      params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
+      paramValues: ["1611941623", "25", "gamepass", "blue", "player", "Bob"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=join_game&p=[1611941623,25,%22gamepass%22,%22blue%22,%22player%22,%22Bob%22]",
       response: `{
-  "game_id": 1,
-  "time_left": "00:00:00",
-  "game_over": true,
-  "teams": [...]
+  "status": "ok",
+  "game_id": 25,
+  "team_id": 33,
+  "role": "player",
+  "player_name": "Bob",
+  "round_number": 1
 }`
     },
     {
       id: 7,
-      name: "submit_hint",
-      description: "Отправка подсказки капитаном",
-      params: ["login (string)", "password (string)", "gameID (int)", "gamePassword (string)", "hint (string)"],
-      paramValues: ["alice123", "pass1", "25", "gamepass", "кот суп лук"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=submit_hint&p=[%22alice123%22,%22pass1%22,25,%22gamepass%22,%22кот суп лук%22]",
+      name: "get_game_state",
+      description: "Получение полного состояния игры. Капитан видит реальные слова противника, игроки видят '???'.",
+      params: ["token (bigint)", "gameID (int)", "gamePassword (string)"],
+      paramValues: ["1611941623", "25", "gamepass"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=get_game_state&p=[1611941623,25,%22gamepass%22]",
       response: `{
-  "status": "success",
-  "team_id": 2,
-  "hint": "кошка стул книга",
-  "phase":
-    "phase_end_time":	"2026-01-16T16:24:59.845254"
+  "status": "ok",
+  "game_id": 25,
+  "time_left": "00:29:45",
+  "game_over": false,
+  "cards_valid": true,
+  "blue_cards_count": 4,
+  "red_cards_count": 4,
+  "player_info": {
+    "login": "bob456",
+    "role": "leader",
+    "team_id": 33,
+    "current_turn": "leader",
+    "can_submit_hint": true,
+    "can_submit_guess": false
+  },
+  "teams": [
+    {
+      "team_id": 33,
+      "color": "blue",
+      "black_tokens": 0,
+      "white_tokens": 0,
+      "result": "playing",
+      "leader": {
+        "login": "alice789",
+        "name": "Alice",
+        "role": "leader"
+      },
+      "players": [
+        {
+          "login": "alice789",
+          "name": "Alice",
+          "role": "leader"
+        },
+        {
+          "login": "bob456",
+          "name": "Bob",
+          "role": "player"
+        }
+      ],
+      "player_count": 2,
+      "cards_valid": true,
+      "cards": [
+        {"position": 1, "word": "жизнь"},
+        {"position": 2, "word": "работа"},
+        {"position": 3, "word": "глаз"},
+        {"position": 4, "word": "человек"}
+      ],
+      "words": ["жизнь", "работа", "глаз", "человек"],
+      "current_round": {
+        "round_number": 1,
+        "correct_code": "321",
+        "guessed_code": null,
+        "intercept_code": null,
+        "hint": null
+      },
+      "previous_rounds": []
+    },
+    {
+      "team_id": 34,
+      "color": "red",
+      "black_tokens": 0,
+      "white_tokens": 0,
+      "result": "playing",
+      "leader": {
+        "login": "charlie",
+        "name": "Charlie",
+        "role": "leader"
+      },
+      "players": [
+        {
+          "login": "charlie",
+          "name": "Charlie",
+          "role": "leader"
+        },
+        {
+          "login": "david",
+          "name": "David",
+          "role": "player"
+        }
+      ],
+      "player_count": 2,
+      "cards_valid": true,
+      "cards": [
+        {"position": 1, "word": "???"},
+        {"position": 2, "word": "???"},
+        {"position": 3, "word": "???"},
+        {"position": 4, "word": "???"}
+      ],
+      "words": ["дом", "лес", "вода", "огонь"],
+      "current_round": {
+        "round_number": 1,
+        "correct_code": null,
+        "guessed_code": null,
+        "intercept_code": null,
+        "hint": null
+      },
+      "previous_rounds": []
+    }
+  ],
+  "game_state": {
+    "phase": "waiting",
+    "players_count": 4,
+    "all_players_ready": true
+  }
 }`
     },
     {
       id: 8,
-      name: "submit_guess",
-      description: "Отправка догадки игроком",
-      params: ["login (string)", "password (string)", "gameID (int)", "gamePassword (string)", "guess (int)"],
-      paramValues: ["alice123", "pass1", "1", "alpha123", "123"],
-      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=submit_guess&p=[%22alice123%22,%22pass1%22,1,%22alpha123%22,%22123%22]",
+      name: "submit_hint",
+      description: "Отправка подсказки капитаном (3 слова). После отправки дается 30 секунд на догадку.",
+      params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "hint (string)"],
+      paramValues: ["1611941623", "25", "gamepass", "кот суп лук"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=submit_hint&p=[1611941623,25,%22gamepass%22,%22кот%20суп%20лук%22]",
       response: `{
-  "status": "success",
-  "team_id": 2,
+  "status": "ok",
+  "hint": "кот суп лук",
   "round_number": 1,
-  "guess": 123,
-  "intercept_token": 0,
-  "disruption_token": 0
+  "team_id": 33,
+  "phase_end_time": "2026-02-11T15:30:45.123456",
+  "message": "Hint submitted successfully. Players have 30 seconds to guess."
+}`
+    },
+    {
+      id: 9,
+      name: "submit_guess",
+      description: "Отправка догадки игроком (3 цифры 1-4). При совпадении с кодом противника - перехват (черный жетон), при несовпадении - срыв (белый жетон). Автоматически создает следующий раунд.",
+      params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "guess (CHAR(3))"],
+      paramValues: ["1611941623", "25", "gamepass", "123"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=submit_guess&p=[1611941623,25,%22gamepass%22,%22123%22]",
+      response: `{
+  "status": "ok",
+  "result": "intercept",
+  "tokens_gained": {
+    "intercept": 1,
+    "disruption": 0
+  },
+  "current_round": 1,
+  "next_round": 2
+}`
+    },
+    {
+      id: 10,
+      name: "leave_game",
+      description: "Выход из игры. Удаляет игрока, карточки команды, раунды и сбрасывает токены.",
+      params: ["token (bigint)", "gameID (int)", "gamePassword (string)", "teamColor ('red' | 'blue')", "role ('player' | 'leader')", "playerName (string)"],
+      paramValues: ["1611941623", "25", "gamepass", "blue", "player", "Bob"],
+      exampleUrl: "https://se.ifmo.ru/~t129889/sql.php?s=s336584&f=leave_game&p=[1611941623,25,%22gamepass%22,%22blue%22,%22player%22,%22Bob%22]",
+      response: `{
+  "status": "ok"
 }`
     }
   ];
@@ -138,75 +270,79 @@ const Documentation = () => {
       name: "users",
       description: "Таблица пользователей системы",
       columns: [
-        { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "Уникальный идентификатор" },
-        { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "UNIQUE", description: "Логин пользователя" },
+        { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "PK", description: "Логин пользователя" },
         { name: "password_hash", type: "VARCHAR(255)", nullable: "NOT NULL", key: "", description: "Хэш пароля" },
         { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Дата создания" },
-        { name: "last_login", type: "TIMESTAMP", nullable: "NULL", key: "", description: "Последний вход" },
+      ]
+    },
+    {
+      name: "tokens",
+      description: "Таблица токенов авторизации",
+      columns: [
+        { name: "token", type: "BIGINT", nullable: "NOT NULL", key: "PK", description: "Токен сессии" },
+        { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "FK → users.login", description: "Логин пользователя" },
+        { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Время создания" },
       ]
     },
     {
       name: "games",
       description: "Таблица игровых сессий",
       columns: [
-        { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID игры" },
-        { name: "password", type: "VARCHAR(50)", nullable: "NOT NULL", key: "", description: "Пароль для входа в игру" },
-        { name: "status", type: "ENUM('waiting', 'active', 'finished')", nullable: "NOT NULL", key: "", description: "Статус игры" },
-        { name: "current_turn", type: "ENUM('red', 'blue')", nullable: "NOT NULL", key: "", description: "Чей сейчас ход" },
-        { name: "created_by", type: "INT", nullable: "NOT NULL", key: "FK → users.id", description: "Создатель игры" },
+        { name: "game_id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID игры" },
+        { name: "password", type: "VARCHAR(50)", nullable: "NULL", key: "", description: "Пароль для входа в игру" },
         { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Время создания" },
+        { name: "phase_end_time", type: "TIMESTAMP", nullable: "NULL", key: "", description: "Время окончания фазы" },
+      ]
+    },
+    {
+      name: "teams",
+      description: "Таблица команд в играх",
+      columns: [
+        { name: "team_id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID команды" },
+        { name: "game_id", type: "INT", nullable: "NOT NULL", key: "FK → games.game_id", description: "ID игры" },
+        { name: "color", type: "color", nullable: "NOT NULL", key: "ENUM('red','blue')", description: "Цвет команды" },
+        { name: "white_tokens", type: "INT", nullable: "NOT NULL", key: "", description: "Белые токены (срыв)" },
+        { name: "black_tokens", type: "INT", nullable: "NOT NULL", key: "", description: "Черные токены (перехват)" },
       ]
     },
     {
       name: "players",
-      description: "Таблица игроков в конкретных играх",
+      description: "Таблица игроков в играх",
       columns: [
-        { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID записи" },
-        { name: "game_id", type: "INT", nullable: "NOT NULL", key: "FK → games.id", description: "ID игры" },
-        { name: "user_id", type: "INT", nullable: "NOT NULL", key: "FK → users.id", description: "ID пользователя" },
-        { name: "team", type: "ENUM('red', 'blue')", nullable: "NOT NULL", key: "", description: "Команда игрока" },
-        { name: "role", type: "ENUM('player', 'leader')", nullable: "NOT NULL", key: "", description: "Роль в команде" },
-        { name: "player_name", type: "VARCHAR(50)", nullable: "NOT NULL", key: "", description: "Имя игрока в игре" },
-        { name: "score", type: "INT", nullable: "NOT NULL DEFAULT 0", key: "", description: "Счет игрока" },
+        { name: "login", type: "VARCHAR(50)", nullable: "NOT NULL", key: "FK → users.login", description: "Логин игрока" },
+        { name: "team_id", type: "INT", nullable: "NOT NULL", key: "FK → teams.team_id", description: "ID команды" },
+        { name: "role", type: "player_role", nullable: "NOT NULL", key: "ENUM('player','leader')", description: "Роль в команде" },
+        { name: "name", type: "VARCHAR(50)", nullable: "NOT NULL", key: "", description: "Имя игрока в игре" },
       ]
     },
     {
-      name: "words",
-      description: "Таблица слов в игре",
+      name: "nouns",
+      description: "Таблица существительных для карточек",
       columns: [
         { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID слова" },
-        { name: "game_id", type: "INT", nullable: "NOT NULL", key: "FK → games.id", description: "ID игры" },
         { name: "word", type: "VARCHAR(100)", nullable: "NOT NULL", key: "", description: "Слово" },
-        { name: "team", type: "ENUM('red', 'blue', 'neutral', 'black')", nullable: "NOT NULL", key: "", description: "Принадлежность слова" },
-        { name: "position", type: "INT", nullable: "NOT NULL", key: "", description: "Позиция на поле" },
-        { name: "revealed", type: "BOOLEAN", nullable: "NOT NULL DEFAULT false", key: "", description: "Раскрыто ли слово" },
-        { name: "revealed_by", type: "ENUM('red', 'blue')", nullable: "NULL", key: "", description: "Кем раскрыто" },
       ]
     },
     {
-      name: "hints",
-      description: "Таблица подсказок",
+      name: "cards",
+      description: "Таблица карточек в игре",
       columns: [
-        { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID подсказки" },
-        { name: "game_id", type: "INT", nullable: "NOT NULL", key: "FK → games.id", description: "ID игры" },
-        { name: "team", type: "ENUM('red', 'blue')", nullable: "NOT NULL", key: "", description: "Команда подсказки" },
-        { name: "leader_id", type: "INT", nullable: "NOT NULL", key: "FK → players.id", description: "ID капитана" },
-        { name: "hint_text", type: "VARCHAR(100)", nullable: "NOT NULL", key: "", description: "Текст подсказки" },
-        { name: "number", type: "INT", nullable: "NOT NULL", key: "", description: "Количество слов" },
-        { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Время создания" },
+        { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID карточки" },
+        { name: "team_id", type: "INT", nullable: "NOT NULL", key: "FK → teams.team_id", description: "ID команды" },
+        { name: "word", type: "VARCHAR(100)", nullable: "NOT NULL", key: "", description: "Слово на карточке" },
+        { name: "position", type: "INT", nullable: "NOT NULL", key: "", description: "Позиция на поле (1-4)" },
       ]
     },
     {
-      name: "guesses",
-      description: "Таблица догадок игроков",
+      name: "rounds",
+      description: "Таблица раундов игры",
       columns: [
-        { name: "id", type: "INT", nullable: "NOT NULL", key: "PK", description: "ID догадки" },
-        { name: "game_id", type: "INT", nullable: "NOT NULL", key: "FK → games.id", description: "ID игры" },
-        { name: "player_id", type: "INT", nullable: "NOT NULL", key: "FK → players.id", description: "ID игрока" },
-        { name: "word_id", type: "INT", nullable: "NOT NULL", key: "FK → words.id", description: "ID слова" },
-        { name: "hint_id", type: "INT", nullable: "NULL", key: "FK → hints.id", description: "ID подсказки" },
-        { name: "created_at", type: "TIMESTAMP", nullable: "NOT NULL", key: "", description: "Время догадки" },
-        { name: "correct", type: "BOOLEAN", nullable: "NULL", key: "", description: "Правильность догадки" },
+        { name: "team_id", type: "INT", nullable: "NOT NULL", key: "FK → teams.team_id", description: "ID команды" },
+        { name: "round_number", type: "INT", nullable: "NOT NULL", key: "", description: "Номер раунда" },
+        { name: "correct_code", type: "CHAR(3)", nullable: "NULL", key: "", description: "Правильный код" },
+        { name: "hint", type: "VARCHAR(100)", nullable: "NULL", key: "", description: "Подсказка" },
+        { name: "guessed_code", type: "CHAR(3)", nullable: "NULL", key: "", description: "Догадка игрока" },
+        { name: "intercept_code", type: "CHAR(3)", nullable: "NULL", key: "", description: "Перехваченный код" },
       ]
     }
   ];
@@ -364,7 +500,7 @@ const Documentation = () => {
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900 mb-1">Документация API</h1>
-            <p className="text-slate-500 text-sm">Версия 2.0.0 • Последнее обновление: 17.01.2026</p>
+            <p className="text-slate-500 text-sm">Версия 2.2.0 • Последнее обновление: 11.02.2026</p>
           </div>
           <div className="relative group">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
@@ -525,37 +661,42 @@ const Documentation = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
                     <div className="space-y-3">
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                        <span>Параметры функции</span>
-                        <span className="text-slate-500 font-normal">{func.params.length} параметров</span>
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        Параметры функции
                       </h4>
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 space-y-3">
-                        {func.params.map((param, index) => (
-                          <div key={index} className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-medium text-slate-700">{param}</span>
-                              <span className="text-[10px] text-slate-400 bg-slate-200 px-1.5 py-0.5 rounded">
-                                #{index + 1}
-                              </span>
-                            </div>
-                            {editingFunc === func.id ? (
-                              <input
-                                type="text"
-                                value={editedParams[index] || ""}
-                                onChange={(e) => handleParamChange(func.id, index, e.target.value)}
-                                className="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
-                                placeholder={`Введите значение для ${param.split(' ')[0]}`}
-                              />
-                            ) : (
-                              <div className="flex items-center justify-between bg-white px-3 py-1.5 rounded border border-slate-200">
-                                <code className="text-sm text-indigo-600 font-mono">
-                                  {func.paramValues[index]}
-                                </code>
-                                <span className="text-xs text-slate-400 italic">изменяемый</span>
+                        {func.params.length > 0 ? (
+                          func.params.map((param, index) => (
+                            <div key={index} className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-medium text-slate-700">{param}</span>
+                                <span className="text-[10px] text-slate-400 bg-slate-200 px-1.5 py-0.5 rounded">
+                                  #{index + 1}
+                                </span>
                               </div>
-                            )}
+                              {editingFunc === func.id ? (
+                                <input
+                                  type="text"
+                                  value={editedParams[index] || ""}
+                                  onChange={(e) => handleParamChange(func.id, index, e.target.value)}
+                                  className="w-full px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                                  placeholder={`Введите значение для ${param.split(' ')[0]}`}
+                                />
+                              ) : (
+                                <div className="flex items-center justify-between bg-white px-3 py-1.5 rounded border border-slate-200">
+                                  <code className="text-sm text-indigo-600 font-mono">
+                                    {func.paramValues[index]}
+                                  </code>
+                                  <span className="text-xs text-slate-400 italic">изменяемый</span>
+                                </div>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-4 text-slate-500 text-sm">
+                            Функция не принимает параметров
                           </div>
-                        ))}
+                        )}
                       </div>
                     </div>
                     

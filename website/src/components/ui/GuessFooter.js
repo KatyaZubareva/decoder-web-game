@@ -1,66 +1,137 @@
 // src/components/ui/GuessFooter.js
 
-import React from "react";
-// Импорт компонента Button оставлен, так как он часть UI
+import React, { useState } from "react";
 import Button from "./Button";
 
-export function GuessFooter() {
-    // Статические данные для демонстрации внешнего вида
-    const staticCodeExample = [
-        { id: 1, word: "Орбита" },
-        { id: 3, word: "Корень" },
-    ];
-    const maxCodeLength = 3;
-    const isGuessing = true; // Статическое отображение: Фаза отгадки
-    const selectedLength = staticCodeExample.length;
+export function GuessFooter({ onGuessSubmit, guess, setGuess, disabled, currentHint, isOpponentHint }) {
+    const [digit1, setDigit1] = useState("");
+    const [digit2, setDigit2] = useState("");
+    const [digit3, setDigit3] = useState("");
+
+    const handleDigitChange = (value, position) => {
+        // Разрешаем только цифры от 1 до 4
+        if (value === "" || (/^[1-4]$/.test(value))) {
+            if (position === 1) {
+                setDigit1(value);
+                if (value && digit2 === "" && digit3 === "") {
+                    // Автофокус на следующее поле
+                    document.getElementById("guess-digit-2")?.focus();
+                }
+            } else if (position === 2) {
+                setDigit2(value);
+                if (value && digit3 === "") {
+                    document.getElementById("guess-digit-3")?.focus();
+                }
+            } else if (position === 3) {
+                setDigit3(value);
+            }
+            
+            // Обновляем общий guess
+            const newGuess = position === 1 ? `${value}${digit2}${digit3}` :
+                            position === 2 ? `${digit1}${value}${digit3}` :
+                            `${digit1}${digit2}${value}`;
+            setGuess(newGuess);
+        }
+    };
+
+    const handleSubmit = () => {
+        const guessCode = `${digit1}${digit2}${digit3}`;
+        if (guessCode.length === 3 && /^[1-4]{3}$/.test(guessCode)) {
+            if (onGuessSubmit) {
+                onGuessSubmit(guessCode);
+            }
+            if (setGuess) setGuess("");
+            setDigit1("");
+            setDigit2("");
+            setDigit3("");
+        }
+    };
+
+    const handleReset = () => {
+        setDigit1("");
+        setDigit2("");
+        setDigit3("");
+        setGuess("");
+    };
+
+    const isDisabled = disabled || digit1 === "" || digit2 === "" || digit3 === "";
+    const hintWords = currentHint ? currentHint.split(" ") : [];
 
     return(
         <footer className="h-40 bg-white border-t border-slate-200 px-4 flex flex-col items-center justify-center z-10">
             <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 w-full max-w-4xl text-center pl-1">
-                {/* Статический текст на основе условного режима */}
-                {isGuessing 
-                    ? `Выберите ${maxCodeLength} карты для отгадки:` 
-                    : `Выберите ${maxCodeLength} карты для подсказки:`
+                {isOpponentHint 
+                    ? `Подсказка соперников: ${hintWords.join(" • ")}` 
+                    : currentHint 
+                        ? `Подсказка вашего ведущего: ${hintWords.join(" • ")}`
+                        : "Введите 3-значный код (цифры от 1 до 4):"
                 }
             </div>
             
             <div className="flex items-center justify-center gap-3 w-full max-w-lg p-3 bg-slate-50 border border-slate-200 rounded-xl shadow-inner transition-all">
                 
-                {/* Статический рендеринг выбранных токенов (2 из 3) */}
-                {staticCodeExample.map((card) => (
-                    <div 
-                        key={card.id} 
-                        // Удален onClick
-                        className="relative w-28 h-12 flex items-center justify-center text-sm font-black text-white bg-indigo-600 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer group overflow-hidden"
-                    >
-                        <span className="font-semibold">{card.word}</span>
-                        {/* Статический эффект "Вернуть" */}
-                        <div className="absolute inset-0 bg-red-500/0 group-hover:bg-red-500/80 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span className="text-xs font-semibold text-white">Вернуть</span>
-                        </div>
-                    </div>
-                ))}
-                
-                {/* Статический рендеринг пустых слотов (1 из 3) */}
-                {Array(maxCodeLength - selectedLength).fill(0).map((_, index) => (
-                    <div key={index + selectedLength} className="w-28 h-12 flex items-center justify-center text-xs font-medium text-slate-400 border-2 border-dashed border-slate-300 rounded-lg bg-white/50">
-                        Слот {selectedLength + index + 1}
-                    </div>
-                ))}
+                {/* Ввод трех цифр */}
+                <div className="flex gap-2">
+                    <input
+                        id="guess-digit-1"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit1}
+                        onChange={(e) => handleDigitChange(e.target.value, 1)}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter' && !isDisabled) handleSubmit();
+                            else if (!/^[1-4]$/.test(e.key) && e.key !== 'Backspace') e.preventDefault();
+                        }}
+                        disabled={disabled}
+                        className="w-16 h-12 text-center text-2xl font-mono font-bold bg-white border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="1"
+                    />
+                    <input
+                        id="guess-digit-2"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit2}
+                        onChange={(e) => handleDigitChange(e.target.value, 2)}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter' && !isDisabled) handleSubmit();
+                            else if (!/^[1-4]$/.test(e.key) && e.key !== 'Backspace') e.preventDefault();
+                        }}
+                        disabled={disabled}
+                        className="w-16 h-12 text-center text-2xl font-mono font-bold bg-white border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="2"
+                    />
+                    <input
+                        id="guess-digit-3"
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit3}
+                        onChange={(e) => handleDigitChange(e.target.value, 3)}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter' && !isDisabled) handleSubmit();
+                            else if (!/^[1-4]$/.test(e.key) && e.key !== 'Backspace') e.preventDefault();
+                        }}
+                        disabled={disabled}
+                        className="w-16 h-12 text-center text-2xl font-mono font-bold bg-white border-2 border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="3"
+                    />
+                </div>
 
-                {/* Статическая Кнопка (имитация неактивности, т.к. 2/3) */}
                 <Button 
-                    className={`h-12 px-6 rounded-xl shadow-indigo-500/20 ml-2 transition-all duration-300 text-sm opacity-50 cursor-not-allowed`} // Используем opacity-50 для неактивного вида
+                    className={`h-12 px-6 rounded-xl shadow-indigo-500/20 ml-2 transition-all duration-300 text-sm ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                     variant="primary"
-                    // Удален onClick и disabled
+                    onClick={handleSubmit}
+                    disabled={isDisabled}
                 >
-                    {isGuessing ? 'Дать отгадку' : 'Дать подсказку'}
+                    Отправить
                 </Button>
                 
-                {/* Статическая кнопка Сброс (имитация активности) */}
                 <button 
-                    // Удален onClick и disabled
-                    className={`p-2 text-slate-400 hover:text-red-500 transition-colors opacity-100`}
+                    onClick={handleReset}
+                    disabled={disabled}
+                    className={`p-2 text-slate-400 hover:text-red-500 transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <span className="text-sm font-medium">Сброс</span>
                 </button>

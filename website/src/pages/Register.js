@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { User, Lock, ShieldCheck, ArrowRight, Wifi } from "lucide-react";
+import { User, Lock, ShieldCheck, ArrowRight, Check } from "lucide-react";
 import Button from "../components/ui/Button";
 import Cookies from "js-cookie";
 
@@ -8,6 +8,7 @@ export function Register() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({ login: "", password: "" });
+    const [agree, setAgree] = useState(false);
 
     const handleSubmit = async (e) => {
             e.preventDefault();
@@ -36,30 +37,30 @@ export function Register() {
     return (
         <div className="min-h-screen bg-[#F3F4F6] flex flex-col justify-center items-center p-4">
             <div className="flex items-center gap-2 mb-8">
-                <div className="bg-indigo-600 text-white p-2 rounded-xl shadow-lg">
-                    <Wifi size={24} />
+                <div className="text-white w-12  shadow-md rounded-xl">
+                    <img src="/assets/logo.png"/>
                 </div>
-                <h1 className="text-2xl font-bold tracking-tight text-gray-900">GameLobby</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900 hover:text-blue-700">Decoder</h1>
             </div>
 
             <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-indigo-100/50 border border-gray-100 overflow-hidden">
                 <div className="p-8">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-extrabold text-gray-900">Регистрация</h2>
-                        <p className="text-gray-500 mt-1">Присоединяйтесь к сообществу игроков</p>
+                        <h2 className="text-2xl font-extrabold text-gray-900 text-center">Регистрация</h2>
+                        <p className="text-gray-500 mt-1 text-center">Присоединяйтесь к сообществу игроков</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-gray-700 ml-1">Имя пользователя</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600">
                                     <User size={18} />
                                 </div>
                                 <input
                                     type="text"
                                     required
-                                    className="block w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                                    className="block w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
                                     placeholder="Player_One"
                                     onChange={(e) => setFormData({...formData, login: e.target.value})}
                                 />
@@ -70,13 +71,13 @@ export function Register() {
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700 ml-1">Пароль</label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600">
                                         <Lock size={17} />
                                     </div>
                                     <input
                                         type="password"
                                         required
-                                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
                                         placeholder="••••••"
                                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                                     />
@@ -85,13 +86,13 @@ export function Register() {
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700 ml-1">Повтор</label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600">
                                         <ShieldCheck size={17} />
                                     </div>
                                     <input
                                         type="password"
                                         required
-                                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
                                         placeholder="••••••"
                                     />
                                 </div>
@@ -99,16 +100,42 @@ export function Register() {
                         </div>
 
                         <div className="flex items-start gap-3 py-2">
-                            <input type="checkbox" required className="mt-1 rounded text-indigo-600 focus:ring-indigo-500" />
-                            <p className="text-xs text-gray-500 leading-relaxed">
-                                Я принимаю условия <a href="#" className="text-indigo-600 hover:underline">Пользовательского соглашения</a> и политики конфиденциальности.
-                            </p>
+                        <button
+                        type="button"
+                        onClick={() => setAgree(!agree)}
+                        className={`flex-shrink-0
+                            w-5 h-5 min-w-[20px] min-h-[20px]
+                            rounded-md border
+                            flex items-center justify-center
+                            transition
+                            ${agree ? "bg-blue-600 border-blue-600" : "border-gray-300 bg-white"}
+                        `}
+                        >
+                        {agree && <Check className="w-4 h-4 text-white" />}
+                        </button>
+
+                        <input
+                            type="checkbox"
+                            required
+                            checked={agree}
+                            onChange={() => {}}
+                            className="hidden"
+                        />
+
+                        <p className="text-xs text-gray-500 leading-relaxed">
+                            Я принимаю условия{" "}
+                            <a href="#" className="text-blue-600 hover:underline">
+                            Пользовательского соглашения
+                            </a>{" "}
+                            и политики конфиденциальности.
+                        </p>
                         </div>
+
 
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 disabled:opacity-70"
+                            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-blue-200 transition-all active:scale-95 disabled:opacity-70"
                         >
                             {isLoading ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -125,7 +152,7 @@ export function Register() {
                 <div className="p-6 bg-gray-50 border-t border-gray-100 text-center">
                     <p className="text-sm text-gray-600">
                         Уже есть аккаунт?{" "}
-                        <Link to="/login" className="font-bold text-indigo-600 hover:underline transition-all">
+                        <Link to="/login" className="font-bold text-blue-600 hover:underline transition-all">
                             Войти
                         </Link>
                     </p>

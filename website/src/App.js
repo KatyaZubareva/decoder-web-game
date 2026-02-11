@@ -93,6 +93,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainScreen />}></Route>
         <Route path='/lobby' element={<LobbyMenu />}></Route>
+        <Route path='/game' element={<GameScreen />}></Route>
         <Route path='/lobby/game' element={<GameScreen />}></Route>
         <Route path='/profile' element={<ProfilePage />}></Route>
         <Route path='/login' element={<Login />}></Route>

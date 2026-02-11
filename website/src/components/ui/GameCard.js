@@ -14,11 +14,11 @@ const GameCard = ({ gameNumber, currentPlayers, maxPlayers, onClick }) => {
             className={`${baseClasses} ${isFull ? fullClasses : freeClasses} ${isFull ? '' : 'group-hover:shadow-indigo-100'}`}
         >
             <div className="flex items-center gap-2 sm:gap-3">
-                <div className={`p-1.5 sm:p-2 rounded-lg border transition-colors ${isFull ? 'bg-gray-200 text-gray-500 border-gray-300' : 'bg-indigo-50 text-indigo-600 border-indigo-100 group-hover:bg-indigo-100'}`}>
+                <div className={`p-3 sm:p-2 rounded-lg border transition-colors ${isFull ? 'bg-gray-200 text-gray-500 border-gray-300' : 'bg-blue-50 text-blue-600 border-blue-100 group-hover:bg-blue-100'}`}>
                     <Lock size={16} className="sm:w-[18px] sm:h-[18px]" />
                 </div>
                 <div>
-                    <h5 className={`font-bold text-sm sm:text-lg tracking-tight ${isFull ? 'text-gray-500' : 'text-gray-900 group-hover:text-indigo-700'} transition-colors`}>
+                    <h5 className={`font-bold text-sm sm:text-lg tracking-tight ${isFull ? 'text-gray-500' : 'text-gray-900 group-hover:text-blue-700'} transition-colors`}>
                         Игра № {gameNumber}
                     </h5>
                     <p className="text-xs font-medium text-gray-400 mt-0.5">
@@ -29,14 +29,14 @@ const GameCard = ({ gameNumber, currentPlayers, maxPlayers, onClick }) => {
             
             <div className="flex items-center gap-2 sm:gap-3">
                 <div className="flex items-center gap-1 text-xs sm:text-sm font-bold">
-                    <Users size={14} className={`sm:w-4 sm:h-4 ${isFull ? 'text-gray-400' : 'text-indigo-400'}`} />
+                    <Users size={14} className={`sm:w-4 sm:h-4 ${isFull ? 'text-gray-400' : 'text-blue-400'}`} />
                     <span className={`transition-colors ${isFull ? 'text-gray-500' : 'text-gray-800'}`}>
                         {currentPlayers}
                     </span>
                     <span className="text-gray-400">/ {maxPlayers}</span>
                 </div>
                 
-                <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all ${isFull ? 'bg-gray-300 text-gray-500' : 'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white'}`}>
+                <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all ${isFull ? 'bg-gray-300 text-gray-500' : 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white'}`}>
                     <ChevronRight size={16} className="sm:w-[18px] sm:h-[18px]" />
                 </div>
             </div>

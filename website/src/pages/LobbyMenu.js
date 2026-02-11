@@ -42,8 +42,9 @@ export function LobbyMenu() {
 
                 const formattedGames = data.map(game => ({
                     id: game.game_id,
-                    currentPlayers: game.players_count,
-                    maxPlayers: 4
+                    currentPlayers: game.players_count || 0,
+                    maxPlayers: 4,
+                    teams: game.teams || []
                 }));
 
                 setGamesToDisplay(formattedGames);
@@ -76,7 +77,7 @@ export function LobbyMenu() {
         if (game && game.currentPlayers < game.maxPlayers) {
             setPlayerSetupMode('join');
             setSelectedGameId(gameId);
-            setSelectedGame(game);
+            setSelectedGame(game); // Передаем полную информацию об игре включая teams
             setShowPlayerSetup(true);
         }
     };
@@ -122,11 +123,11 @@ export function LobbyMenu() {
             <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-sm border-b border-gray-100 px-3 sm:px-4 py-3 sm:py-4 mb-4 sm:mb-6 transition-all">
                 <div className="max-w-5xl mx-auto flex justify-between items-center">
                     <div className="flex items-center gap-2 pl-2 pr-4">
-                        <div className="bg-indigo-600 text-white p-1.5 rounded-lg shadow-md flex items-center justify-center">
-                            <Wifi size={18} className="sm:w-5 sm:h-5" />
+                        <div className="text-white flex items-center justify-center w-12 shadow-md rounded-xl">
+                            <img src="/assets/logo.png"/>
                         </div>
-                        <h1 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900">
-                            Игровое лобби
+                        <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-gray-900 hover:text-blue-700">
+                            Decoder
                         </h1>
                     </div>
 
@@ -143,19 +144,19 @@ export function LobbyMenu() {
                         <div className="animate-pulse w-32 sm:w-40 h-8 sm:h-9 bg-gray-200 rounded-full hidden sm:block"></div>
                     ) : isAuth ? (
                         <div className="hidden sm:flex items-center gap-3 pl-2 pr-4 py-1 transition-shadow cursor-pointer">
-                            <p className="font-bold text-lg text-gray-800 hover:text-indigo-600" style={{ lineHeight: "1", margin: 0 }} onClick={() => navigate("/profile")}>{login}</p>
+                            <p className="font-bold text-lg text-gray-800 hover:text-blue-600" style={{ lineHeight: "1", margin: 0 }} onClick={() => navigate("/profile")}>{login}</p>
                             <img src="/assets/avatar2.png" className="w-10 h-10 rounded-full border border-gray-50" alt="avatar" />
                         </div>
                     ) : (
                         <div className="hidden sm:flex items-center gap-3">
                             <Button
-                                className="px-4 py-2.5 text-sm font-semibold text-indigo-600 bg-white hover:bg-indigo-50 border border-indigo-200 rounded-lg transition"
+                                className="px-4 py-2.5 text-sm font-semibold text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-lg transition"
                                 onClick={() => navigate("/login")}
                             >
                                 Вход
                             </Button>
                             <Button
-                                className="px-4 py-2.5 text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg transition shadow-md shadow-indigo-200"
+                                className="px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition"
                                 onClick={() => navigate("/register")}
                             >
                                 Регистрация
@@ -174,7 +175,7 @@ export function LobbyMenu() {
                         ) : (
                             <div className="flex flex-col gap-2">
                                 <Button
-                                    className="w-full py-3 text-sm font-semibold text-indigo-600 bg-white hover:bg-indigo-50 border border-indigo-200 rounded-lg transition"
+                                    className="w-full py-3 text-sm font-semibold text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-lg transition"
                                     onClick={() => {
                                         setIsMobileMenuOpen(false);
                                         navigate("/login");
@@ -183,7 +184,7 @@ export function LobbyMenu() {
                                     Вход
                                 </Button>
                                 <Button
-                                    className="w-full py-3 text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg transition shadow-md shadow-indigo-200"
+                                    className="w-full py-3 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition shadow-md shadow-blue-200"
                                     onClick={() => {
                                         setIsMobileMenuOpen(false);
                                         navigate("/register");
@@ -201,9 +202,9 @@ export function LobbyMenu() {
                 
                 <div className="flex flex-col gap-2 sm:gap-3">
                     <div className="flex justify-between items-end px-1 sm:px-2 mb-1">
-                        <h2 className="text-base sm:text-lg font-extrabold text-gray-900 tracking-tight">Активные комнаты</h2>
+                        <h2 className="text-base sm:text-lg font-extrabold text-gray-900 tracking-tight">Активные игры</h2>
                         <span className="text-xs font-semibold text-gray-400 bg-gray-200 px-2 py-1 rounded-md">
-                            {gamesToDisplay.length} комнат
+                            Количество игр: {gamesToDisplay.length} 
                         </span>
                     </div>
 
@@ -237,7 +238,7 @@ export function LobbyMenu() {
 
             <div className="fixed bottom-4 sm:bottom-6 left-0 right-0 flex justify-center px-3 sm:px-4 pointer-events-none z-30">
                 <Button
-                    className="pointer-events-auto flex items-center gap-2 sm:gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 sm:py-3.5 px-6 sm:px-8 w-full sm:w-1/2 rounded-full shadow-[0_12px_30px_rgb(79,70,229,0.4)] transition-all hover:scale-[1.03] active:scale-95 text-sm sm:text-base"
+                    className="pointer-events-auto flex items-center gap-2 sm:gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 sm:py-3.5 px-6 sm:px-8 w-full sm:w-1/2 rounded-full shadow-[0_12px_30px_rgba(29,78,216,0.4)] transition-all hover:scale-[1.03] active:scale-95 text-sm sm:text-base"
                     onClick={handleCreateGameClick}
                 >
                     <Plus strokeWidth={3} size={18} className="sm:w-5 sm:h-5" />
